@@ -1,0 +1,4 @@
+include opendlm/VERSION
+include pytest.ini
+include LICENSE
+include examples/*.py

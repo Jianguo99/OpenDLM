@@ -19,7 +19,7 @@ class AdaptiveCFGSampler(Sampler):
         remask_ratio: The ratio of the tokens to be re-masked in each step.
         unmasking_scheduler: The unmasking scheduler.
         score_type: The score type for selecting tokens.
-        propagate_eot: If set to True, all subsequent positions after the fisrt end-of-text token will be filled with the end-of-text token. 
+        propagate_eot: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
         random_selection: If set to True, the tokens will be selected randomly rather than using the score.
 
     Reference:

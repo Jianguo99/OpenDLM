@@ -18,14 +18,14 @@ class BlockSampler(Sampler):
         block_length: The length of the block.
         unmasking_scheduler: The unmasking scheduler.
         score_type: The score type for selecting tokens.
-        early_stopping: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
+        propagate_eot: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
         random_selection: If set to True, the tokens will be selected randomly rather than using the score.
 
     Reference:
         - Nie, Shen, et al. "Large language diffusion models." arXiv preprint arXiv:2502.09992 (2025).
     """
-    def __init__(self, block_length: int = 32, unmasking_scheduler: UnmaskingScheduler = None, score_type: str = "confidence", early_stopping: bool = False, random_selection: bool = False):
-        super().__init__(unmasking_scheduler, score_type, early_stopping, random_selection)
+    def __init__(self, block_length: int = 32, unmasking_scheduler: UnmaskingScheduler = None, score_type: str = "confidence", propagate_eot: bool = False, random_selection: bool = False):
+        super().__init__(unmasking_scheduler, score_type, propagate_eot, random_selection)
         self.block_length = block_length
 
 
@@ -68,7 +68,7 @@ class BlockSampler(Sampler):
                 if selected_index.shape[0] > 0:
                     x[selected_index[:, 0], block_start + selected_index[:, 1]] = gen_block_x[selected_index[:, 0], selected_index[:, 1]]
                 
-                if self.early_stopping:
+                if self.propagate_eot:
                     x = self.propagate_eot_token(x, endoftext_token_id, prompt_length=input_ids.shape[1])
                 history.append(x.clone())
         return OpenDLMOutput(sequences=x, history=history, NFE=NFE)

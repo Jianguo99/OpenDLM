@@ -15,13 +15,13 @@ unmasking_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
 # Define the generation config, including the max new tokens, timesteps, temperature, top_p, top_k
 llm_generation_config = LMGenerationConfig(max_new_tokens=256, timesteps=256, temperature=0.2, top_p=0.95, top_k=20)
 # Choose the sampler
-sampler = Sampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", early_stopping=True, random_selection=False)
+sampler = Sampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", propagate_eot=False, random_selection=False)
 
 # The null classifier-free guidance sampler
-# sampler = NullCFGSampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", early_stopping=False, random_selection=False)
+# sampler = NullCFGSampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", propagate_eot=False, random_selection=False)
 
 # The adaptive classifier-free guidance sampler
-# sampler = AdaptiveCFGSampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", early_stopping=False, random_selection=False)
+# sampler = AdaptiveCFGSampler(unmasking_scheduler=unmasking_scheduler, score_type="confidence", propagate_eot=False, random_selection=False)
 
 
 

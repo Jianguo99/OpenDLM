@@ -10,9 +10,9 @@ open_dlm.model = open_dlm.model.to("cuda").eval()
 # Define the generation config, including the max new tokens, timesteps, temperature, top_p, top_k
 llm_generation_config = LMGenerationConfig(max_new_tokens=256, timesteps=256, temperature=0.0, top_p=1.0, top_k=0)
 # Choose the sampler
-# base_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
-base_scheduler = DetailedUnmaskingScheduler(gen_length=32, alpha=2.0)
-sampler = BlockSampler(unmasking_scheduler=base_scheduler, score_type="confidence", early_stopping=False, random_selection=False, block_length=32)
+base_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
+# base_scheduler = DetailedUnmaskingScheduler(gen_length=32, alpha=2.0)
+sampler = BlockSampler(unmasking_scheduler=base_scheduler, score_type="confidence", propagate_eot=False, random_selection=False, block_length=32)
 
 # Define the system prompt and messages
 system_prompt = "Please reason step by step, and put your final answer within \\boxed{{}}."

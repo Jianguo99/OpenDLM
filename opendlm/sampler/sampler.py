@@ -23,14 +23,14 @@ class Sampler:
     Args:
         unmasking_scheduler: The unmasking scheduler.
         score_type: The score type for selecting tokens.
-        early_stopping: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
+        propagate_eot: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
         random_selection: If set to True, the tokens will be selected randomly rather than using the score.
         
     Reference:
         - https://huggingface.co/Dream-org/Dream-v0-Instruct-7B
         - Nie, Shen, et al. "Large language diffusion models." arXiv preprint arXiv:2502.09992 (2025).
     """
-    def __init__(self, unmasking_scheduler: UnmaskingScheduler = UnmaskingScheduler, score_type: str = "confidence", early_stopping: bool = False, random_selection: bool = False):
+    def __init__(self, unmasking_scheduler: UnmaskingScheduler = UnmaskingScheduler, score_type: str = "confidence", propagate_eot: bool = False, random_selection: bool = False):
         
         if score_type not in ["confidence", "margin", "entropy"]:
             raise ValueError(f"Invalid score type: {score_type}")
@@ -38,7 +38,7 @@ class Sampler:
         self.unmasking_scheduler = unmasking_scheduler
         self.score_type = score_type
         self.random_selection = random_selection
-        self.early_stopping = early_stopping
+        self.propagate_eot = propagate_eot
         
 
     def generate(self, input_ids, attention_mask, model: AutoModel, tokenizer: AutoTokenizer, generation_config: LMGenerationConfig):
@@ -89,7 +89,7 @@ class Sampler:
                 x[selected_index[:, 0], input_ids.shape[1] + selected_index[:, 1]] = gen_x[selected_index[:, 0], selected_index[:, 1]]
             
 
-            if self.early_stopping:
+            if self.propagate_eot:
                 x = self.propagate_eot_token(x, endoftext_token_id, prompt_length=input_ids.shape[1])
                             
             history.append(x.clone())
@@ -131,7 +131,7 @@ class Sampler:
             if self.score_type == "margin":
                 sorted_probs, _ = torch.sort(probs, dim=-1, descending=True)
                 # Extract top1 and top2 probabilities
-                top1_probs = sorted_probs[:, 0] 
+                top1_probs = sorted_probs[:, 0]
                 top2_probs = sorted_probs[:, 1] 
                 # Calculate confidence as top1 - top2
                 confidence = top1_probs - top2_probs 

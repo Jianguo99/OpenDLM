@@ -19,14 +19,14 @@ class AdaptiveCFGSampler(Sampler):
         remask_ratio: The ratio of the tokens to be re-masked in each step.
         unmasking_scheduler: The unmasking scheduler.
         score_type: The score type for selecting tokens.
-        early_stopping: If set to True, all subsequent positions after the end-of-text token will be filled with the end-of-text token. 
+        propagate_eot: If set to True, all subsequent positions after the fisrt end-of-text token will be filled with the end-of-text token. 
         random_selection: If set to True, the tokens will be selected randomly rather than using the score.
 
     Reference:
         Li P, Yan S, Tsai J, et al. Adaptive Classifier-Free Guidance via Dynamic Low-Confidence Masking[J]. arXiv preprint arXiv:2505.20199, 2025
     """
-    def __init__(self, guidance_scale: float = 1.0, remask_ratio: float = 0.3, unmasking_scheduler: UnmaskingScheduler = None, score_type: str = "confidence", early_stopping: bool = False, random_selection: bool = False):
-        super().__init__(unmasking_scheduler, score_type=score_type, early_stopping=early_stopping, random_selection=random_selection)
+    def __init__(self, guidance_scale: float = 1.0, remask_ratio: float = 0.3, unmasking_scheduler: UnmaskingScheduler = None, score_type: str = "confidence", propagate_eot: bool = False, random_selection: bool = False):
+        super().__init__(unmasking_scheduler, score_type=score_type, propagate_eot=propagate_eot, random_selection=random_selection)
         self.guidance_scale = guidance_scale  # CFG weight w
         self.remask_ratio = remask_ratio      # Re-mask ratio for uncond in each step ρ
 
@@ -86,7 +86,7 @@ class AdaptiveCFGSampler(Sampler):
             if selected_index.shape[0] > 0:
                 x[selected_index[:, 0], prompt_len + selected_index[:, 1]] = gen_x[selected_index[:, 0], selected_index[:, 1]]
 
-            if self.early_stopping:
+            if self.propagate_eot:
                 x = self.propagate_eot_token(x, tokenizer.endoftext_token_id, prompt_length=prompt_len)
 
             history.append(x.clone())

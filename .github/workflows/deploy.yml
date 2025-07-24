@@ -30,12 +30,12 @@ jobs:
           pip install readme_renderer[md]
       - name: Build a binary wheel
         run: python -m build
-         - name: Publish distribution 📦 to TestPyPI
-           uses: pypa/gh-action-pypi-publish@release/v1
-           with:
-             user: __token__
-             password: ${{ secrets.jianguo_test_pypi_password }}
-             repository_url: https://test.pypi.org/legacy/
+      - name: Publish distribution 📦 to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.jianguo_test_pypi_password }}
+          repository_url: https://test.pypi.org/legacy/
       # - name: Publish distribution 📦 to PyPI
       #   uses: pypa/gh-action-pypi-publish@release/v1
       #   with:

@@ -6,9 +6,8 @@ on:
   push:
     tags:
       - '*'
-#  push:
-#    branches:
-#      - development
+    branches:
+      - develop
 
 jobs:
   build-n-publish:

@@ -3,7 +3,7 @@ name: ReadTheDocs Build
 on:
   push:
     branches:
-      - development
+      - develop
       - main
     tags:
       - '*'

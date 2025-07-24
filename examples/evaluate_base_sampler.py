@@ -2,13 +2,13 @@ import torch
 
 from opendlm.model import OpenDLM, LMGenerationConfig
 from opendlm.sampler import Sampler, AdaptiveCFGSampler, NullCFGSampler
-from opendlm.sampler.scheduler import LinearUnmaskingScheduler, DetailedUnmaskingScheduler
+from opendlm.sampler.scheduler import FlexibleUnmaskingScheduler, DetailedUnmaskingScheduler
 
 model_name = "Dream-org/Dream-v0-Instruct-7B"
 open_dlm = OpenDLM(model_name, torch_dtype=torch.bfloat16, trust_remote_code=True)
 open_dlm.model = open_dlm.model.to("cuda").eval()
 
-unmasking_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
+unmasking_scheduler = FlexibleUnmaskingScheduler(gen_length=256, timesteps=256, schedule_type="linear")
 # unmasking_scheduler = DetailedUnmaskingScheduler(gen_length=256, alpha=2.0)
 
 

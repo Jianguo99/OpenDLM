@@ -9,7 +9,7 @@ OpenDLM currently supports a growing set of Diffusion Language Models (DLMs) and
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Supported DLMs**          | - [LLaDA: Large Language Diffusion Models](https://github.com/ML-GSAI/LLaDA) <br> - [Dream 7B](https://github.com/DreamLM/Dream)                                                                                                                            |
 | **Sampling Strategies**     | - **Base Sampler** <br> - **Block Sampler** <br> - **Null Classifier-guided sampling** <br> - **Adaptive Classifier-guided sampling** <br> |
-| **Unmasking Schedulers**     | - **Linear Scheduler** <br> - **Detailed Unmasking Schedulers** |
+| **Unmasking Schedulers**     | - **Base Scheduler** <br> - **Detailed Unmasking Schedulers** |
 
 ---
 
@@ -43,13 +43,13 @@ import torch
 
 from opendlm.model import OpenDLM, LMGenerationConfig
 from opendlm.sampler import Sampler, AdaptiveCFGSampler, NullCFGSampler
-from opendlm.sampler.scheduler import LinearUnmaskingScheduler, DetailedUnmaskingScheduler
+from opendlm.sampler.scheduler import FlexibleUnmaskingScheduler, DetailedUnmaskingScheduler
 
 model_name = "Dream-org/Dream-v0-Instruct-7B"
 open_dlm = OpenDLM(model_name, torch_dtype=torch.bfloat16, trust_remote_code=True)
 open_dlm.model = open_dlm.model.to("cuda").eval()
 
-unmasking_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
+unmasking_scheduler = FlexibleUnmaskingScheduler(gen_length=256, timesteps=256, schedule_type="linear")
 # Define the generation config, including the max new tokens, timesteps, temperature, top_p, top_k
 llm_generation_config = LMGenerationConfig(max_new_tokens=256, timesteps=256, temperature=0.2, top_p=0.95, top_k=20)
 # Choose the sampler

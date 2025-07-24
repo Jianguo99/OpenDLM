@@ -28,4 +28,3 @@ docs/buildA
 torch_scae.egg-info
 *.so
 *.egg-info
-docs

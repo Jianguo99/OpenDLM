@@ -2,7 +2,7 @@ import torch
 
 from opendlm.model import OpenDLM, LMGenerationConfig
 from opendlm.sampler import BlockSampler
-from opendlm.sampler.scheduler import LinearUnmaskingScheduler, DetailedUnmaskingScheduler
+from opendlm.sampler.scheduler import FlexibleUnmaskingScheduler, DetailedUnmaskingScheduler
 
 model_name = "GSAI-ML/LLaDA-8B-Instruct"
 open_dlm = OpenDLM(model_name, torch_dtype=torch.bfloat16, trust_remote_code=True)
@@ -10,7 +10,7 @@ open_dlm.model = open_dlm.model.to("cuda").eval()
 # Define the generation config, including the max new tokens, timesteps, temperature, top_p, top_k
 llm_generation_config = LMGenerationConfig(max_new_tokens=256, timesteps=256, temperature=0.0, top_p=1.0, top_k=0)
 # Choose the sampler
-base_scheduler = LinearUnmaskingScheduler(gen_length=256, timesteps=256)
+base_scheduler = FlexibleUnmaskingScheduler(gen_length=256, timesteps=256, schedule_type="linear")
 # base_scheduler = DetailedUnmaskingScheduler(gen_length=32, alpha=2.0)
 sampler = BlockSampler(unmasking_scheduler=base_scheduler, score_type="confidence", propagate_eot=False, random_selection=False, block_length=32)
 

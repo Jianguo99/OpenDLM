@@ -10,14 +10,14 @@ import os
 from setuptools import find_packages
 from setuptools import setup
 
-with open(os.path.join(os.path.dirname(__file__), 'torchcp/VERSION')) as f:
+with open(os.path.join(os.path.dirname(__file__), 'opendlm/VERSION')) as f:
     version = f.read().strip()
 
-setup(name='torchcp',
+setup(name='opendlm',
       version=version,
-      url='https://github.com/ml-stat-Sustech/TorchCP',
+      url='https://github.com/Jianguo99/OpenDLM',
       package_data={'examples': ['*.ipynb']},
-      description="A Python toolbox for conformal prediction on deep learning models.",
+      description="A Python toolbox for diffusion language models focusing on sampling strategies.",
       install_requires=[],
       include_package_data=True,
       packages=find_packages(),

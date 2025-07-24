@@ -7,4 +7,4 @@
 from .model import OpenDLM, LMGenerationConfig, OpenDLMOutput
 from .sampler import *
 
-__all__ = ['OpenDLM', 'LMGenerationConfig', 'Sampler', 'BlockSampler', 'AdaptiveCFGSampler', 'AdaptiveTempSampler', 'MaskScheduler', 'OpenDLMOutput']
+__all__ = ['OpenDLM', 'LMGenerationConfig', 'Sampler', 'BlockSampler', 'AdaptiveCFGSampler', 'OpenDLMOutput']

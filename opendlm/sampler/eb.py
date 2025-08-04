@@ -31,13 +31,13 @@ class EBSampler(BlockSampler):
         mask_token_id = tokenizer.mask_token_id
         endoftext_token_id = tokenizer.endoftext_token_id
 
-        # 检查分块一致性
+        # Check block consistency
         if gen_length % block_length != 0:
             raise ValueError(f"gen_length {gen_length} must be divisible by block_length {block_length}")
         if timesteps % (gen_length // block_length) != 0:
             raise ValueError(f"timesteps {timesteps} must be divisible by num_blocks {gen_length // block_length}")
 
-        # 初始化 x
+        # Initialize x
         x = torch.full((input_ids.shape[0], input_ids.shape[1] + gen_length), mask_token_id, dtype=torch.long).to(input_ids.device)
         x[:, :input_ids.shape[1]] = input_ids.clone()
 
@@ -54,16 +54,15 @@ class EBSampler(BlockSampler):
                 if block_masked_index.sum() == 0:
                     break
 
-                # 模型前向
                 logits = model(x).logits
                 NFE += 1
                 gen_logits = logits[:, block_start:block_end]
 
-                # 选取每个位置最可能token (argmax)
+                # Select the most likely token for each position (argmax)
                 gen_confidence, gen_entropy, gen_block_x = self.sample_tokens(gen_logits, generation_config.temperature, generation_config.top_p, generation_config.top_k)
                
 
-                # 调用EB-Scheduler，选择当前step要unmask的token
+                # Call EB-Scheduler, select the tokens to unmask at current step
                 selected_index = self.unmasking_scheduler.get_transfer_indices(
                     gen_entropy, gen_confidence, block_masked_index, i_step
                 )

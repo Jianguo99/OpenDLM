@@ -8,7 +8,7 @@ OpenDLM currently supports a growing set of Diffusion Language Models (DLMs) and
 | ✅ **Feature**               | **Details**                                                                                                                                                                                                                                               |
 |-----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Supported DLMs**          | - [LLaDA: Large Language Diffusion Models](https://github.com/ML-GSAI/LLaDA) <br> - [Dream 7B](https://github.com/DreamLM/Dream)                                                                                                                            |
-| **Sampling Strategies**     | - **Base Sampler** <br> - **Block Sampler** <br> - **Null Classifier-guided sampling** <br> - **Adaptive Classifier-guided sampling** <br> |
+| **Sampling Strategies**     | - **Base Sampler** <br> - **Block Sampler** <br> - **Null Classifier-guided sampling** <br> - **Adaptive Classifier-guided sampling** <br> - [**Entropy-Bounded Sampler**](https://arxiv.org/abs/2505.24857) <br> |
 | **Unmasking Schedulers**     | - **Base Scheduler** <br> - **Detailed Unmasking Schedulers** |
 
 ---

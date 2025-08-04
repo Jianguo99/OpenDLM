@@ -85,6 +85,7 @@ class Sampler:
             gen_confidence, gen_x = self.sample_tokens(gen_logits, generation_config.temperature, generation_config.top_p, generation_config.top_k)
             
             selected_index = self.unmasking_scheduler.get_transfer_indices(gen_confidence, masked_index, i_step)
+            
             if selected_index.shape[0] > 0:
                 x[selected_index[:, 0], input_ids.shape[1] + selected_index[:, 1]] = gen_x[selected_index[:, 0], selected_index[:, 1]]
             
@@ -115,7 +116,7 @@ class Sampler:
         if top_k is not None and top_k > 0:
             logits = self.top_k_logits(logits, top_k)
         probs = torch.softmax(logits, dim=-1)
-
+        
         if temperature > 0:
             try:
                 x0 = dists.Categorical(probs=probs).sample()
@@ -129,20 +130,27 @@ class Sampler:
             confidence = torch.rand((x0.shape[0], x0.shape[1]), device=x0.device)
         else:
             if self.score_type == "margin":
-                sorted_probs, _ = torch.sort(probs, dim=-1, descending=True)
-                # Extract top1 and top2 probabilities
-                top1_probs = sorted_probs[:, 0]
-                top2_probs = sorted_probs[:, 1] 
-                # Calculate confidence as top1 - top2
-                confidence = top1_probs - top2_probs 
+                confidence = self.margin_score(probs)
             
             if self.score_type == "entropy":
-                epsilon = 1e-10
-                log_probs = torch.log(probs + epsilon)
-                confidence = torch.sum(probs * log_probs, dim=-1)
+                confidence = self.neg_entropy_score(probs)
                 
         return confidence, x0
     
+    def neg_entropy_score(self, probs):
+        epsilon = 1e-10
+        log_probs = torch.log(probs + epsilon)
+        confidence = torch.sum(probs * log_probs, dim=-1)
+        return confidence
+    
+    def margin_score(self, probs):
+        sorted_probs, _ = torch.sort(probs, dim=-1, descending=True)
+        # Extract top1 and top2 probabilities
+        top1_probs = sorted_probs[..., 0]
+        top2_probs = sorted_probs[..., 1] 
+        # Calculate confidence as top1 - top2
+        confidence = top1_probs - top2_probs 
+        return confidence
     
     def top_p_logits(self, logits, top_p=None):
         sorted_logits, sorted_indices = torch.sort(logits, descending=True)

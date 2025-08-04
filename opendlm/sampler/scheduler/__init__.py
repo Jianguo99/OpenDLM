@@ -8,5 +8,6 @@
 from .base import UnmaskingScheduler
 from .flexible import FlexibleUnmaskingScheduler
 from .dus import DetailedUnmaskingScheduler
+from .eb import EntropyBoundedUnmaskingScheduler
 
-__all__ = ["UnmaskingScheduler", "FlexibleUnmaskingScheduler", "DetailedUnmaskingScheduler"]
+__all__ = ["UnmaskingScheduler", "FlexibleUnmaskingScheduler", "DetailedUnmaskingScheduler", "EntropyBoundedUnmaskingScheduler"]

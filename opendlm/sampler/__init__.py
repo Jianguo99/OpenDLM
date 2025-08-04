@@ -9,5 +9,6 @@ from .sampler import Sampler
 from .block import BlockSampler
 from .acfg import AdaptiveCFGSampler
 from .nullcfg import NullCFGSampler
+from .eb import EBSampler
 
-__all__ = ['Sampler', 'BlockSampler', 'AdaptiveCFGSampler', 'NullCFGSampler']
+__all__ = ['Sampler', 'BlockSampler', 'AdaptiveCFGSampler', 'NullCFGSampler', 'EBSampler']

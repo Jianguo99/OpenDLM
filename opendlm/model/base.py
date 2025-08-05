@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import copy
+import time
 
 from transformers import AutoTokenizer, AutoModel
 import torch
@@ -56,7 +57,8 @@ class DreamConfig:
 class OpenDLMOutput:
     sequences: torch.LongTensor = None
     history: Optional[Tuple[torch.FloatTensor]] = None
-    NFE: Optional[int] = None     
+    NFE: Optional[int] = None # number of forward evaluations
+    gen_lantency: Optional[float] = None # generation latency
        
 
 class OpenDLM:
@@ -105,6 +107,7 @@ class OpenDLM:
         generation_config = copy.deepcopy(generation_config)
         generation_config.update(**kwargs)
 
+        start_time = time.time()
         output = sampler.generate(
             input_ids=input_ids,
             attention_mask=attention_mask,
@@ -112,7 +115,8 @@ class OpenDLM:
             tokenizer=self.tokenizer,
             generation_config=generation_config
         )
-
+        gen_lantency = time.time() - start_time
+        output.gen_lantency = gen_lantency
         return output if return_dict else output["sequences"]
 
 
